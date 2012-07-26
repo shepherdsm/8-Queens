@@ -8,4 +8,4 @@ Later versions will add a solution to this, but that's way too much work
 currently.
 
 Right now, focusing on adding in a GUI to display the solutions utilizing
-PyQt or PySide or some such. Also, maybe some threads? Who knows.
+PySide or some such. Also, maybe some threads? Who knows.
