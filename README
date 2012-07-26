@@ -1,0 +1,11 @@
+My take on solving the 8-queens problem. Currently solves it by treating
+each row in the board as a number and XOR'ing it with possible valid moves.
+
+The CLI driver runs it with the most naive approach to solving the problem
+by attempting all solutions and not caring whether it's a reflection
+of a previous solve. So it attempts every single configuration. No bueno. :(
+Later versions will add a solution to this, but that's way too much work
+currently.
+
+Right now, focusing on adding in a GUI to display the solutions utilizing
+PyQt or PySide or some such. Also, maybe some threads? Who knows.
