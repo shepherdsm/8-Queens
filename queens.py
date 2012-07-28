@@ -1,4 +1,6 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
+
 """
 My implementation for solving the Queen's problem. Uses the most naive brute-force
 approach. I'm attempting to be clever by treating everything as bits to save on space,

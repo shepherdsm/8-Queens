@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+# -*- coding: utf-8 -*-
 
 """
 Runs the queens implementation in a, hopefully, independant of implementation way.
