@@ -8,20 +8,21 @@ from PySide.QtGui import *
 import queens
 import search_queens 
 
-class QueenDisplay(QDialog):
+class QueenDisplay(QWidget):
     """
     Main form for displaying the 8 queens chess board along with various
     ways to interact with the chessboard and change its appearance and such.
     """
 
     def __init__(self, parent=None):
-        super(QueenDisplay, self).__init__(parent)
+        super(QueenDisplay, self).__init__()
         self.setWindowTitle("8 Queens Problem")
 
-if __name__ == "__main__":
+def main():
     app = QApplication(sys.argv)
-
     display = QueenDisplay()
     display.show()
-
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
