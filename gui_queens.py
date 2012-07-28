@@ -8,7 +8,7 @@ from PySide.QtGui import *
 import queens
 import search_queens 
 
-class QueenDisplay(QWidget):
+class QueenDisplay(QMainWindow):
     """
     Main form for displaying the 8 queens chess board along with various
     ways to interact with the chessboard and change its appearance and such.
