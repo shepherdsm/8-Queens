@@ -7,5 +7,20 @@ of a previous solve. So it attempts every single configuration. No bueno. :(
 Later versions will add a solution to this, but that's way too much work
 currently.
 
-Right now, focusing on adding in a GUI to display the solutions utilizing
-PySide or some such. Also, maybe some threads? Who knows.
+TODO:
+1. Write Main GUI using PySide (PyQt4):
+    - Display chess board
+    - Display "Solution #" above said chess board
+    - Allow user to change size of board
+    - Allow user to browse through solutions
+2. Add spiffy features into GUI other than just display the board such as:
+    - Skip to beginning
+    - Skip to End (Slightly dangerous this one)
+    - Skip to N
+3. Add more spiffy features into the GUI such as:
+    - Change color of tiles
+    - Change color of queen
+    - Change Queen marker (Maybe)
+4. Look into separating the queen finder into a thread to allow user to browse
+    without needing to wait (necessarily).
+5. Program less naive implementations to solve the 8-Queens problem.
