@@ -70,6 +70,9 @@ def remove_move(move, row, board):
     
     board[row] ^= move
 
+def get_column(move, size):
+    return size - int(math.log(move, 2)) - 1
+
 def invalid_spots(move, move_row, size):
     """
     Takes in a move, then makes a list containing all of the spots
@@ -79,7 +82,7 @@ def invalid_spots(move, move_row, size):
     """
 
     moves = []
-    col = size - int(math.log(move, 2)) - 1 # Get the column the move falls into
+    col = get_column(move, size) # Get the column the move falls into
     for cur_row in range(size):
         diff = abs(cur_row - move_row)
         if diff != 0:
