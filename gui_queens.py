@@ -17,6 +17,8 @@ from PySide.QtGui import *
 
 import queens
 
+MAX_BOARD = 9 # Max amount of queens supported. IE: Doesn't slow it down too much.
+
 class ChessBoardWidget(QWidget):
     """
     Creates a chessboard widget that gets drawn onto the screen and updated
@@ -41,7 +43,10 @@ class ChessBoardWidget(QWidget):
     def init_UI(self):
         self.solution_label = self.init_sol_label()
         self.set_solution_label()
-        self.spacer = QSpacerItem(9 * self.square_sides, 9 * self.square_sides)
+
+        # Set to currently max chessboard size the program supports.
+        # This way there's no resizing issue.
+        self.spacer = QSpacerItem(MAX_BOARD * self.square_sides, MAX_BOARD * self.square_sides)
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.solution_label, alignment=Qt.AlignCenter | Qt.AlignTop)
@@ -164,6 +169,8 @@ class QueenDisplay(QMainWindow):
         Since Windows can't have a display layout really, creating
         a main widget to act as the central widget for the program.
         The main widget contains the layout for everything in the program.
+
+        Returns the populated widget.
         """
         main_widget = QWidget(self)
 
@@ -174,7 +181,7 @@ class QueenDisplay(QMainWindow):
         right_layout = QVBoxLayout()
         right_layout.addWidget(self.board)
 
-        display_layout.addWidget(self.control_grid())
+        display_layout.addWidget(self.control_frame())
         display_layout.addLayout(right_layout)
         main_layout.addLayout(display_layout)
         main_layout.addWidget(self.browse_frame())
@@ -208,6 +215,12 @@ class QueenDisplay(QMainWindow):
             self.board.set_position(len(self.board.solutions) - 1)
 
     def browse_frame(self):
+        """
+        Frame created to house the navigation buttons. Used to jump around among
+        the solutions easily.
+
+        Returns the populated frame.
+        """
         frame = QFrame()
         frame.setFrameShape(QFrame.StyledPanel)
         frame_layout = QVBoxLayout()
@@ -238,10 +251,12 @@ class QueenDisplay(QMainWindow):
 
         return frame        
     
-    def control_grid(self):
+    def control_frame(self):
         """
         A widget to define the control structure used to control the display
         of the chess board widget.
+
+        Returns the populated frame.
         """
         frame = QFrame()
         frame.setFrameStyle(QFrame.StyledPanel)
@@ -283,7 +298,6 @@ class QueenDisplay(QMainWindow):
         return frame
 
     def change_size(self, num):
-        
         self.board.update_size(int(num))
 
 def main():
