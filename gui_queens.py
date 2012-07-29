@@ -25,11 +25,17 @@ class ChessBoardWidget(QWidget):
 
     TODO: Function that draws queens.
     """
-    def __init__(self, size=8, sides=10):
+    def __init__(self, size=8, sides=30):
         super(ChessBoardWidget, self).__init__()
 
         self.board_size = size
         self.square_sides = sides
+
+        box = QHBoxLayout()
+        # A spacer item is needed to draw on, otherwise the rest of the program
+        # Eats up the available space.
+        box.addSpacerItem(QSpacerItem(size * sides, size * sides))
+        self.setLayout(box)
 
         self.square_color1 = (0, 255, 0)
         self.square_color2 = (0, 0, 0)
@@ -80,13 +86,10 @@ class QueenDisplay(QMainWindow):
     ways to interact with the chessboard and change its appearance and such.
     """
 
-    def __init__(self, size=8, sides=20, parent=None):
+    def __init__(self, parent=None):
         super(QueenDisplay, self).__init__()
 
-        self.board = ChessBoardWidget(sides=sides)
-        self.board.update()
-        self.size = size
-        self.sides = sides
+        self.board = ChessBoardWidget()
 
         self.init_UI()
 
@@ -106,22 +109,22 @@ class QueenDisplay(QMainWindow):
         """
         main_widget = QWidget(self)
 
-        main_box = QHBoxLayout()
-#        main_box.addWidget(self.control_widget())
-        main_box.addWidget(QPushButton("Test"))
-        main_box.addWidget(self.board)
-        main_box.addWidget(QPushButton("Test"))
-        main_widget.setLayout(main_box)
+        main_layout = QHBoxLayout()
+
+        right_layout = QVBoxLayout()
+        right_layout.addWidget(self.board)
+
+        main_layout.addLayout(self.control_grid())
+        main_layout.addLayout(right_layout)
+        main_widget.setLayout(main_layout)
 
         return main_widget
 
-    def control_widget(self):
+    def control_grid(self):
         """
         A widget to define the control structure used to control the display
         of the chess board widget.
         """
-        con_wid = QWidget()
-
         size_label = QLabel("Size")
         size_edit = QLineEdit()
 
@@ -134,18 +137,17 @@ class QueenDisplay(QMainWindow):
         queen_label = QLabel("Queen Color Picker")
         queen_combo = QComboBox()
 
-        grid = QGridLayout()
-        grid.addWidget(size_label, 0, 0, 1, 2)
-        grid.addWidget(size_edit, 0, 2)
-        grid.addWidget(color1_label, 1, 0, 1, 3)
-        grid.addWidget(color1_combo, 2, 0, 1, 3)
-        grid.addWidget(color2_label, 3, 0, 1, 3)
-        grid.addWidget(color2_combo, 4, 0, 1, 3)
-        grid.addWidget(queen_label, 5, 0, 1, 3)
-        grid.addWidget(queen_combo, 6, 0, 1, 3)
-        con_wid.setLayout(grid)
+        grid = QVBoxLayout()
+        grid.addWidget(size_label)
+        grid.addWidget(size_edit)
+        grid.addWidget(color1_label)
+        grid.addWidget(color1_combo)
+        grid.addWidget(color2_label)
+        grid.addWidget(color2_combo)
+        grid.addWidget(queen_label)
+        grid.addWidget(queen_combo)
 
-        return con_wid
+        return grid 
         
 def main():
     app = QApplication(sys.argv)
