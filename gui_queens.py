@@ -41,7 +41,7 @@ class ChessBoardWidget(QWidget):
     def init_UI(self):
         self.solution_label = self.init_sol_label()
         self.set_solution_label()
-        self.spacer = QSpacerItem(*self._get_size())
+        self.spacer = QSpacerItem(9 * self.square_sides, 9 * self.square_sides)
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.solution_label, alignment=Qt.AlignCenter | Qt.AlignTop)
@@ -49,11 +49,12 @@ class ChessBoardWidget(QWidget):
         # A spacer item is needed to draw on, otherwise the rest of the program
         # Eats up the available space.
         self.layout.addSpacerItem(self.spacer)
+        self.layout.addSpacing(self.offset)
 
         self.setLayout(self.layout)
 
     def _get_size(self):
-        return [self.board_size * self.square_sides + self.offset] * 2
+        return [self.board_size * self.square_sides] * 2
 
     def init_sol_label(self):
         label = QLabel("Solution 1")
@@ -74,7 +75,6 @@ class ChessBoardWidget(QWidget):
 
     def update_size(self, num):
         self.board_size = num
-        self.spacer.changeSize(*self._get_size())
         self.solutions = queens.get_solutions(queens.init_board(num),
                                             queens.possible_moves(num), 0, [])
         self.set_solution_label()
@@ -122,7 +122,11 @@ class ChessBoardWidget(QWidget):
         into the middle of the proper square, then draw their radius 5 smaller on a side to not
         take up the entire square. Looks nicer that way I think.
         """
-        tmp = self.solutions[self.position]
+        try:
+            tmp = self.solutions[self.position]
+        except IndexError:
+            return
+
         qp.setPen(QColor(*self.queen_color))
         qp.setBrush(QColor(*self.queen_color))
         for row in range(len(tmp)):
@@ -148,7 +152,7 @@ class QueenDisplay(QMainWindow):
     def init_UI(self):
         self.setCentralWidget(self.main_widget())
         
-        self.setGeometry(300, 300, 800, 500)
+        self.move(300, 300)
         self.setWindowTitle("8 Queens Problem")
         self.show()
 
@@ -160,25 +164,64 @@ class QueenDisplay(QMainWindow):
         """
         main_widget = QWidget(self)
 
-        main_layout = QHBoxLayout()
+        main_layout = QVBoxLayout()
+
+        display_layout = QHBoxLayout() # Holds the controls and chess board
 
         right_layout = QVBoxLayout()
         right_layout.addWidget(self.board)
 
-        main_layout.addLayout(self.control_grid())
-        main_layout.addLayout(right_layout)
+        display_layout.addWidget(self.control_grid())
+        display_layout.addLayout(right_layout)
+        main_layout.addLayout(display_layout)
+        main_layout.addWidget(self.browse_frame())
+
         main_widget.setLayout(main_layout)
 
         return main_widget
 
+    def browse_frame(self):
+        frame = QFrame()
+        frame.setFrameShape(QFrame.StyledPanel)
+        frame_layout = QVBoxLayout()
+        nav_layout = QHBoxLayout()
+
+        first = QPushButton("First")
+
+        prev = QPushButton("Prev")
+
+        _next = QPushButton("Next")
+
+        last = QPushButton("Last")
+
+        jump = QPushButton("Jump")
+        jump.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+
+        nav_layout.addWidget(first)
+        nav_layout.addWidget(prev)
+        nav_layout.addWidget(_next)
+        nav_layout.addWidget(last)
+
+        frame_layout.addLayout(nav_layout)
+        frame_layout.addWidget(jump, alignment = Qt.AlignTop | Qt.AlignCenter)
+
+        frame.setLayout(frame_layout)
+
+        return frame        
+    
     def control_grid(self):
         """
         A widget to define the control structure used to control the display
         of the chess board widget.
         """
+        frame = QFrame()
+        frame.setFrameStyle(QFrame.StyledPanel)
+
         size_label = QLabel("Size")
         size_display = QLCDNumber()
         size_display.display(self.board.board_size)
+        size_display.setSegmentStyle(QLCDNumber.Flat)
+        size_display.setFrameStyle(QFrame.Plain)
         size_slider = QSlider(Qt.Horizontal)
         size_slider.setMinimum(1)
         size_slider.setMaximum(9)
@@ -206,7 +249,9 @@ class QueenDisplay(QMainWindow):
         grid.addWidget(queen_label, 6, 0, 1, 2, Qt.AlignCenter)
         grid.addWidget(queen_combo, 7, 0, 1, 2)
 
-        return grid
+        frame.setLayout(grid)
+
+        return frame
 
     def change_size(self, num):
         
