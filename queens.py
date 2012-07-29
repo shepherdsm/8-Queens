@@ -126,7 +126,7 @@ def find_solutions_naive(board, move_list, cur_row, cur_moves):
         except IndexError:
             pass
 
-def get_solutions():
+def get_solutions(board, move_list, cur_row, cur_moves):
     """
     Abstracts away the fact a global is used to collect the solutions as I might want to
     change that later to not quite be so spaghetti like.
@@ -135,6 +135,7 @@ def get_solutions():
     """
 
     global ALL_SOLS
+    find_solutions_naive(board, move_list, cur_row, cur_moves)
     return ALL_SOLS
 
 if __name__ == "__main__":
