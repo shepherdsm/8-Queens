@@ -30,26 +30,39 @@ class ChessBoardWidget(QWidget):
 
         self.board_size = size
         self.square_sides = sides
-
-        box = QHBoxLayout()
-        # A spacer item is needed to draw on, otherwise the rest of the program
-        # Eats up the available space.
-        box.addSpacerItem(QSpacerItem(size * sides, size * sides))
-        self.setLayout(box)
-
         self.square_color1 = (0, 255, 0)
-        self.square_color2 = (0, 0, 0)
+        self.square_color2 = (0, 0, 255)
+        self.offset = 40 # Offsets where the board is drawn and how big the spacer is
 
         self.init_UI()
 
     def init_UI(self):
-        pass
+        self.solution_label = self.init_sol_label()
+        self.set_solution_label(0)
+        layout = QVBoxLayout()
+
+        layout.addWidget(self.solution_label, alignment=Qt.AlignCenter | Qt.AlignTop)
+
+        # A spacer item is needed to draw on, otherwise the rest of the program
+        # Eats up the available space.
+        layout.addSpacerItem(QSpacerItem(self.board_size * self.square_sides + self.offset,
+                                        self.board_size * self.square_sides + self.offset))
+
+        self.setLayout(layout)
+
+    def init_sol_label(self):
+        label = QLabel("Solution 0")
+        label.setFont(QFont("Helvetica", 25, QFont.Bold))
+        return label
 
     def set_square_color1(color1):
         self.square_color1 = color1
 
     def set_square_color2(color2):
         self.square_color2 = color2
+
+    def set_solution_label(self, num):
+        self.solution_label.setText("Solution %s" % num)
 
     def paintEvent(self, e):
         qp = QPainter()
@@ -62,13 +75,13 @@ class ChessBoardWidget(QWidget):
         Draws the squares onto the widget. The variable first_square doesn't
         particularly matter as long as it's an int and they're a different parity.
         """
-        offset_w = offset_h = 0 
+        offset_h = self.offset
 
         qp.setPen(QColor(*color))
         qp.setBrush(QColor(*color))
 
         for i in range(first_square, self.board_size + first_square):
-            offset_w = self.square_sides * (i % 2)
+            offset_w = self.square_sides * (i % 2) + self.offset // 2
             for j in range(i % 2, self.board_size, 2):
                 qp.drawRect(offset_w, offset_h, self.square_sides, self.square_sides)
                 offset_w += self.square_sides * 2
@@ -127,6 +140,8 @@ class QueenDisplay(QMainWindow):
         """
         size_label = QLabel("Size")
         size_edit = QLineEdit()
+        size_edit.setFixedWidth(50)
+        size_push = QPushButton("Resize")
 
         color1_label = QLabel("Square1 Color Picker")
         color1_combo = QComboBox()
@@ -137,15 +152,16 @@ class QueenDisplay(QMainWindow):
         queen_label = QLabel("Queen Color Picker")
         queen_combo = QComboBox()
 
-        grid = QVBoxLayout()
-        grid.addWidget(size_label)
-        grid.addWidget(size_edit)
-        grid.addWidget(color1_label)
-        grid.addWidget(color1_combo)
-        grid.addWidget(color2_label)
-        grid.addWidget(color2_combo)
-        grid.addWidget(queen_label)
-        grid.addWidget(queen_combo)
+        grid = QGridLayout()
+        grid.addWidget(size_label, 0, 0, 1, 2, Qt.AlignCenter)
+        grid.addWidget(size_edit, 1, 0)
+        grid.addWidget(size_push, 1, 1)
+        grid.addWidget(color1_label, 2, 0, 1, 2, Qt.AlignCenter)
+        grid.addWidget(color1_combo, 3, 0, 1, 2)
+        grid.addWidget(color2_label, 4, 0, 1, 2, Qt.AlignCenter)
+        grid.addWidget(color2_combo, 5, 0, 1, 2)
+        grid.addWidget(queen_label, 6, 0, 1, 2, Qt.AlignCenter)
+        grid.addWidget(queen_combo, 7, 0, 1, 2)
 
         return grid 
         
