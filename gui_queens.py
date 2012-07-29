@@ -38,16 +38,20 @@ class ChessBoardWidget(QWidget):
     def init_UI(self):
         self.solution_label = self.init_sol_label()
         self.set_solution_label(0)
-        layout = QVBoxLayout()
+        print (self._get_size())
+        self.spacer = QSpacerItem(*self._get_size())
 
-        layout.addWidget(self.solution_label, alignment=Qt.AlignCenter | Qt.AlignTop)
+        self.layout = QVBoxLayout()
+        self.layout.addWidget(self.solution_label, alignment=Qt.AlignCenter | Qt.AlignTop)
 
         # A spacer item is needed to draw on, otherwise the rest of the program
         # Eats up the available space.
-        layout.addSpacerItem(QSpacerItem(self.board_size * self.square_sides + self.offset,
-                                        self.board_size * self.square_sides + self.offset))
+        self.layout.addSpacerItem(self.spacer)
 
-        self.setLayout(layout)
+        self.setLayout(self.layout)
+
+    def _get_size(self):
+        return [self.board_size * self.square_sides + self.offset] * 2
 
     def init_sol_label(self):
         label = QLabel("Solution 0")
@@ -62,6 +66,11 @@ class ChessBoardWidget(QWidget):
 
     def set_solution_label(self, num):
         self.solution_label.setText("Solution %s" % num)
+
+    def update_size(self, num):
+        self.board_size = num
+        self.spacer.changeSize(*self._get_size())
+        self.update()
 
     def paintEvent(self, e):
         qp = QPainter()
@@ -141,7 +150,7 @@ class QueenDisplay(QMainWindow):
         size_label = QLabel("Size")
         size_edit = QLineEdit()
         size_edit.setFixedWidth(50)
-        size_push = QPushButton("Resize")
+        size_edit.textChanged[str].connect(self.change_size)
 
         color1_label = QLabel("Square1 Color Picker")
         color1_combo = QComboBox()
@@ -154,8 +163,7 @@ class QueenDisplay(QMainWindow):
 
         grid = QGridLayout()
         grid.addWidget(size_label, 0, 0, 1, 2, Qt.AlignCenter)
-        grid.addWidget(size_edit, 1, 0)
-        grid.addWidget(size_push, 1, 1)
+        grid.addWidget(size_edit, 1, 0, alignment=Qt.AlignCenter)
         grid.addWidget(color1_label, 2, 0, 1, 2, Qt.AlignCenter)
         grid.addWidget(color1_combo, 3, 0, 1, 2)
         grid.addWidget(color2_label, 4, 0, 1, 2, Qt.AlignCenter)
@@ -163,8 +171,11 @@ class QueenDisplay(QMainWindow):
         grid.addWidget(queen_label, 6, 0, 1, 2, Qt.AlignCenter)
         grid.addWidget(queen_combo, 7, 0, 1, 2)
 
-        return grid 
-        
+        return grid
+
+    def change_size(self, num):
+        self.board.update_size(int(num))
+
 def main():
     app = QApplication(sys.argv)
     display = QueenDisplay()
