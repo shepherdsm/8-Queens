@@ -21,8 +21,6 @@ class ChessBoardWidget(QWidget):
     """
     Creates a chessboard widget that gets drawn onto the screen and updated
     when certain controls are changed.
-
-    TODO: Function that draws queens.
     """
     def __init__(self, size=8, sides=30):
         super(ChessBoardWidget, self).__init__()
@@ -42,7 +40,7 @@ class ChessBoardWidget(QWidget):
 
     def init_UI(self):
         self.solution_label = self.init_sol_label()
-        self.set_solution_label(0)
+        self.set_solution_label()
         self.spacer = QSpacerItem(*self._get_size())
 
         self.layout = QVBoxLayout()
@@ -68,15 +66,18 @@ class ChessBoardWidget(QWidget):
     def set_square_color2(color2):
         self.square_color2 = color2
 
-    def set_solution_label(self, num):
-        self.solution_label.setText("Solution %s" % num)
+    def set_solution_label(self):
+        if len(self.solutions) == 0:
+            self.solution_label.setText("No Solutions")
+        else:
+            self.solution_label.setText("Solution %d" % (self.position + 1))
 
     def update_size(self, num):
         self.board_size = num
         self.spacer.changeSize(*self._get_size())
         self.solutions = queens.get_solutions(queens.init_board(num),
                                             queens.possible_moves(num), 0, [])
-        print(self.solutions)
+        self.set_solution_label()
         self.update()
 
     def paintEvent(self, e):
@@ -147,7 +148,7 @@ class QueenDisplay(QMainWindow):
     def init_UI(self):
         self.setCentralWidget(self.main_widget())
         
-        self.move(300, 300)
+        self.setGeometry(300, 300, 800, 500)
         self.setWindowTitle("8 Queens Problem")
         self.show()
 
@@ -176,9 +177,14 @@ class QueenDisplay(QMainWindow):
         of the chess board widget.
         """
         size_label = QLabel("Size")
-        size_edit = QLineEdit()
-        size_edit.setFixedWidth(50)
-        size_edit.textChanged[str].connect(self.change_size)
+        size_display = QLCDNumber()
+        size_display.display(self.board.board_size)
+        size_slider = QSlider(Qt.Horizontal)
+        size_slider.setMinimum(1)
+        size_slider.setMaximum(9)
+        size_slider.setSliderPosition(self.board.board_size)
+        size_slider.valueChanged.connect(self.change_size)
+        size_slider.valueChanged.connect(size_display.display)
 
         color1_label = QLabel("Square1 Color Picker")
         color1_combo = QComboBox()
@@ -190,8 +196,9 @@ class QueenDisplay(QMainWindow):
         queen_combo = QComboBox()
 
         grid = QGridLayout()
-        grid.addWidget(size_label, 0, 0, 1, 2, Qt.AlignCenter)
-        grid.addWidget(size_edit, 1, 0, alignment=Qt.AlignCenter)
+        grid.addWidget(size_label, 0, 0, alignment=Qt.AlignCenter)
+        grid.addWidget(size_display, 0, 1)
+        grid.addWidget(size_slider, 1, 0, 1, 2, Qt.AlignCenter)
         grid.addWidget(color1_label, 2, 0, 1, 2, Qt.AlignCenter)
         grid.addWidget(color1_combo, 3, 0, 1, 2)
         grid.addWidget(color2_label, 4, 0, 1, 2, Qt.AlignCenter)
@@ -202,6 +209,7 @@ class QueenDisplay(QMainWindow):
         return grid
 
     def change_size(self, num):
+        
         self.board.update_size(int(num))
 
 def main():
