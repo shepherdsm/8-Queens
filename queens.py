@@ -138,6 +138,7 @@ def get_solutions(board, move_list, cur_row, cur_moves):
     """
 
     global ALL_SOLS
+    ALL_SOLS = []
     find_solutions_naive(board, move_list, cur_row, cur_moves)
     return ALL_SOLS
 
