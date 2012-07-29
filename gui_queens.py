@@ -56,7 +56,7 @@ class ChessBoardWidget(QWidget):
         Draws the squares onto the widget. The variable first_square doesn't
         particularly matter as long as it's an int and they're a different parity.
         """
-        offset_w = offset_h = 0        
+        offset_w = offset_h = 0 
 
         qp.setPen(QColor(*color))
         qp.setBrush(QColor(*color))
@@ -80,10 +80,13 @@ class QueenDisplay(QMainWindow):
     ways to interact with the chessboard and change its appearance and such.
     """
 
-    def __init__(self, parent=None):
+    def __init__(self, size=8, sides=20, parent=None):
         super(QueenDisplay, self).__init__()
 
-        self.board = ChessBoardWidget(10)
+        self.board = ChessBoardWidget(sides=sides)
+        self.board.update()
+        self.size = size
+        self.sides = sides
 
         self.init_UI()
 
@@ -91,7 +94,7 @@ class QueenDisplay(QMainWindow):
     def init_UI(self):
         self.setCentralWidget(self.main_widget())
         
-        self.setGeometry(300, 300, 500, 500)
+        self.move(300, 300)
         self.setWindowTitle("8 Queens Problem")
         self.show()
 
@@ -104,8 +107,10 @@ class QueenDisplay(QMainWindow):
         main_widget = QWidget(self)
 
         main_box = QHBoxLayout()
-        main_box.addWidget(self.control_widget())
+#        main_box.addWidget(self.control_widget())
+        main_box.addWidget(QPushButton("Test"))
         main_box.addWidget(self.board)
+        main_box.addWidget(QPushButton("Test"))
         main_widget.setLayout(main_box)
 
         return main_widget
@@ -120,7 +125,27 @@ class QueenDisplay(QMainWindow):
         size_label = QLabel("Size")
         size_edit = QLineEdit()
 
+        color1_label = QLabel("Square1 Color Picker")
+        color1_combo = QComboBox()
+
+        color2_label = QLabel("Square2 Color Picker")
+        color2_combo = QComboBox()
+
+        queen_label = QLabel("Queen Color Picker")
+        queen_combo = QComboBox()
+
         grid = QGridLayout()
+        grid.addWidget(size_label, 0, 0, 1, 2)
+        grid.addWidget(size_edit, 0, 2)
+        grid.addWidget(color1_label, 1, 0, 1, 3)
+        grid.addWidget(color1_combo, 2, 0, 1, 3)
+        grid.addWidget(color2_label, 3, 0, 1, 3)
+        grid.addWidget(color2_combo, 4, 0, 1, 3)
+        grid.addWidget(queen_label, 5, 0, 1, 3)
+        grid.addWidget(queen_combo, 6, 0, 1, 3)
+        con_wid.setLayout(grid)
+
+        return con_wid
         
 def main():
     app = QApplication(sys.argv)
