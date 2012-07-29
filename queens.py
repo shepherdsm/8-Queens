@@ -113,7 +113,7 @@ def find_solutions_naive(board, move_list, cur_row, cur_moves):
         for move in move_list:
             if is_valid_move(move, board, cur_row):
                 cur_moves.append(make_move(move, board, cur_row))
-                find_solutions(board, move_list, cur_row + 1, cur_moves)
+                find_solutions_naive(board, move_list, cur_row + 1, cur_moves)
         try:
             remove_move(cur_moves.pop(), cur_row - 1, board)
         except IndexError:
