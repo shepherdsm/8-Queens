@@ -5,18 +5,20 @@ The CLI driver runs it with the most naive approach to solving the problem
 by attempting all solutions and not caring whether it's a reflection
 of a previous solve. So it attempts every single configuration. No bueno. :(
 Later versions will add a solution to this, but that's way too much work
-currently.
+currently. More so focusing on building the GUI using Qt.
 
-TODO:
+COMPLETE:
 1. Write Main GUI using PySide (PyQt4):
     X Display chess board
     X Display "Solution #" above said chess board
     X Allow user to change size of board
-    - Allow user to browse through solutions
+    X Allow user to browse through solutions
 2. Add spiffy features into GUI other than just display the board such as:
-    - Skip to beginning
-    - Skip to End (Slightly dangerous this one)
-    - Skip to N
+    X Skip to beginning
+    X Skip to End (Slightly dangerous this one)
+    X Skip to N
+
+TODO:
 3. Add more spiffy features into the GUI such as:
     - Change color of tiles
     - Change color of queen
