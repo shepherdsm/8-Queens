@@ -12,6 +12,8 @@ Ver: 1.0
 
 import math
 
+ALL_SOLS = []
+
 def init_board(size):
     """
     Takes in a size for a side of the board, and makes a list of 0s of length size.
@@ -101,29 +103,42 @@ def possible_moves(size):
 
     return [2 ** (n - 1) for n in range(size, 0, -1)]
 
+def find_solutions_naive(board, move_list, cur_row, cur_moves):
+    """
+    Most naive implementation of finding the solution to the 8 queens.
+    Doesn't rule anything out and bruteforces every possible attempt.
+    Runs moderately fast enough up to about 11 queens.
+    """
+    if cur_row != len(board):
+        for move in move_list:
+            if is_valid_move(move, board, cur_row):
+                cur_moves.append(make_move(move, board, cur_row))
+                find_solutions(board, move_list, cur_row + 1, cur_moves)
+        try:
+            remove_move(cur_moves.pop(), cur_row - 1, board)
+        except IndexError:
+            pass
+    else:
+        global ALL_SOLS
+        ALL_SOLS.append(cur_moves)
+        try:
+            remove_move(cur_moves.pop(), cur_row - 1, board)
+        except IndexError:
+            pass
+
+def get_solutions():
+    """
+    Abstracts away the fact a global is used to collect the solutions as I might want to
+    change that later to not quite be so spaghetti like.
+
+    Returns a list of all the solutions found.
+    """
+
+    global ALL_SOLS
+    return ALL_SOLS
+
 if __name__ == "__main__":
-    board_size = 5
-    board = init_board(board_size)
-    poss_moves = possible_moves(board_size)
-
-    for move in poss_moves:
-       for row in range(board_size):
-            text = "Given move {:0>%d} and row {} the invalid moves are:" % board_size
-            print (text.format(bin(move)[2:], row))
-            print_board(invalid_spots(move, row, board_size))
-            print ()
-
-    make_move(poss_moves[0], board, 0)
-    print_board(board)
-    make_move(poss_moves[3], board, 1)
-    print()
-    print_board(board)
-    make_move(poss_moves[1], board, 2)
-    print()
-    print_board(board)
-    make_move(poss_moves[4], board, 3)
-    print()
-    print_board(board)
-    make_move(poss_moves[2], board, 4)
-    print()
-    print_board(board)
+    for size in range(4, 7):
+        board = init_board(size)
+        find_solutions_naive(board, possible_moves(size), 0, [])
+        print ("Found {} solutions for size {}".format(len(get_solutions()), size))
