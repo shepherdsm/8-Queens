@@ -74,6 +74,9 @@ class ChessBoardWidget(QWidget):
     def update_size(self, num):
         self.board_size = num
         self.spacer.changeSize(*self._get_size())
+        self.solutions = queens.get_solutions(queens.init_board(num),
+                                            queens.possible_moves(num), 0, [])
+        print(self.solutions)
         self.update()
 
     def paintEvent(self, e):
@@ -123,7 +126,7 @@ class ChessBoardWidget(QWidget):
         qp.setBrush(QColor(*self.queen_color))
         for row in range(len(tmp)):
             col = queens.get_column(tmp[row], self.board_size)
-            qp.drawEllipse(QPointF(self.square_sides * row + (self.offset + self.square_sides)) // 2,
+            qp.drawEllipse(QPointF(self.square_sides * row + (self.offset + self.square_sides) // 2,
                                   self.square_sides * col + self.offset + self.square_sides // 2),
                             self.square_sides // 2 - 5, self.square_sides // 2 - 5)
 
