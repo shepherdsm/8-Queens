@@ -31,14 +31,18 @@ class ChessBoardWidget(QWidget):
         self.square_sides = sides
         self.square_color1 = (0, 255, 0)
         self.square_color2 = (0, 0, 255)
+        self.queen_color = (0, 0, 0)
         self.offset = 40 # Offsets where the board is drawn and how big the spacer is
+        # List of all the solutions
+        self.solutions = queens.get_solutions(queens.init_board(size),
+                                            queens.possible_moves(size), 0, [])
+        self.position = 0 # Position in the solutions
 
         self.init_UI()
 
     def init_UI(self):
         self.solution_label = self.init_sol_label()
         self.set_solution_label(0)
-        print (self._get_size())
         self.spacer = QSpacerItem(*self._get_size())
 
         self.layout = QVBoxLayout()
@@ -54,7 +58,7 @@ class ChessBoardWidget(QWidget):
         return [self.board_size * self.square_sides + self.offset] * 2
 
     def init_sol_label(self):
-        label = QLabel("Solution 0")
+        label = QLabel("Solution 1")
         label.setFont(QFont("Helvetica", 25, QFont.Bold))
         return label
 
@@ -101,6 +105,18 @@ class ChessBoardWidget(QWidget):
         self.draw_squares(qp, 0, self.square_color1)
         # Draw second set of squares
         self.draw_squares(qp, 1, self.square_color2)
+        # Draw the queens
+        self.draw_queens(qp)
+
+    def draw_queens(self, qp):
+        tmp = self.solutions[self.position]
+        qp.setPen(QColor(*self.queen_color))
+        qp.setBrush(QColor(*self.queen_color))
+        for row in range(len(tmp)):
+            col = queens.get_column(tmp[row], self.board_size)
+            qp.drawEllipse(QPointF(self.square_sides * row + (self.offset + self.square_sides)) // 2,
+                                  self.square_sides * col + self.offset + self.square_sides // 2),
+                            self.square_sides // 2 - 5, self.square_sides // 2 - 5)
 
 class QueenDisplay(QMainWindow):
     """
