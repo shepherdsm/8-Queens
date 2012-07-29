@@ -16,7 +16,6 @@ from PySide.QtCore import *
 from PySide.QtGui import *
 
 import queens
-import search_queens 
 
 class ChessBoardWidget(QWidget):
     """
@@ -73,7 +72,8 @@ class ChessBoardWidget(QWidget):
     def draw_squares(self, qp, first_square, color):
         """
         Draws the squares onto the widget. The variable first_square doesn't
-        particularly matter as long as it's an int and they're a different parity.
+        particularly matter as long as it's an int and it's a different parity
+        from the previous/future call of it.
         """
         offset_h = self.offset
 
