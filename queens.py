@@ -20,7 +20,7 @@ def init_board(size):
 
     Returns a list of 0s len size.
     """
-    if size < 4:
+    if size < 1:
         raise ValueError("The board size must be 4 or more.")
 
     return [0] * size
