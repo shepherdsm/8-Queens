@@ -184,10 +184,8 @@ class QueenDisplay(QMainWindow):
         return main_widget
 
     def jump(self):
-        dialog = QInputDialog()
-        num, ok = dialog.getInt(self, 'Jump Dialog', 'Jump to: ',
+        num, ok = QInputDialog().getInt(self, 'Jump Dialog', 'Jump To:',
                                 minValue=1, maxValue=len(self.board.solutions))
-
         if ok:
             self.board.set_position(num - 1)
 
