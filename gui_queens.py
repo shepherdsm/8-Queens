@@ -109,6 +109,15 @@ class ChessBoardWidget(QWidget):
         self.draw_queens(qp)
 
     def draw_queens(self, qp):
+        """
+        Draws the queens onto the board. self.solutions has all the solutions, and
+        self.position is where we are in the list of solutions. Updated by other functions.
+        draw_queens doesn't care one iota about it. It just wants to draw some queens.
+        
+        The scary looking stuff in Ellipse is just to position the queens right. We center them
+        into the middle of the proper square, then draw their radius 5 smaller on a side to not
+        take up the entire square. Looks nicer that way I think.
+        """
         tmp = self.solutions[self.position]
         qp.setPen(QColor(*self.queen_color))
         qp.setBrush(QColor(*self.queen_color))
