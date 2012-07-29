@@ -120,7 +120,7 @@ def find_solutions_naive(board, move_list, cur_row, cur_moves):
             pass
     else:
         global ALL_SOLS
-        ALL_SOLS.append(cur_moves)
+        ALL_SOLS.append(cur_moves[:])
         try:
             remove_move(cur_moves.pop(), cur_row - 1, board)
         except IndexError:
@@ -141,5 +141,6 @@ def get_solutions(board, move_list, cur_row, cur_moves):
 if __name__ == "__main__":
     for size in range(4, 7):
         board = init_board(size)
-        find_solutions_naive(board, possible_moves(size), 0, [])
-        print ("Found {} solutions for size {}".format(len(get_solutions()), size))
+        sols = get_solutions(board, possible_moves(size), 0, [])
+        print (sols)
+        print ("Found {} solutions for size {}".format(len(sols), size))
