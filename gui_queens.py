@@ -27,9 +27,9 @@ class ChessBoardWidget(QWidget):
 
         self.board_size = size
         self.square_sides = sides
-        self.square_color1 = (0, 255, 0)
-        self.square_color2 = (0, 0, 255)
-        self.queen_color = (0, 0, 0)
+        self.square_color1 = Qt.darkRed 
+        self.square_color2 = Qt.black
+        self.queen_color = Qt.white
         self.offset = 40 # Offsets where the board is drawn and how big the spacer is
         # List of all the solutions
         self.solutions = queens.get_solutions(queens.init_board(size),
@@ -73,7 +73,7 @@ class ChessBoardWidget(QWidget):
         if len(self.solutions) == 0:
             self.solution_label.setText("No Solutions")
         else:
-            self.solution_label.setText("Solution %d" % (self.position + 1))
+            self.solution_label.setText("Solution %d of %d" % (self.position + 1, len(self.solutions)))
 
     def update_size(self, num):
         self.board_size = num
@@ -97,8 +97,8 @@ class ChessBoardWidget(QWidget):
         """
         offset_h = self.offset
 
-        qp.setPen(QColor(*color))
-        qp.setBrush(QColor(*color))
+        qp.setPen(QColor(color))
+        qp.setBrush(QColor(color))
 
         for i in range(first_square, self.board_size + first_square):
             offset_w = self.square_sides * (i % 2) + self.offset // 2
@@ -130,8 +130,8 @@ class ChessBoardWidget(QWidget):
         except IndexError:
             return
 
-        qp.setPen(QColor(*self.queen_color))
-        qp.setBrush(QColor(*self.queen_color))
+        qp.setPen(QColor(self.queen_color))
+        qp.setBrush(QColor(self.queen_color))
         for row in range(len(tmp)):
             col = queens.get_column(tmp[row], self.board_size)
             qp.drawEllipse(QPointF(self.square_sides * row + (self.offset + self.square_sides) // 2,
@@ -208,11 +208,13 @@ class QueenDisplay(QMainWindow):
         nav_layout = QHBoxLayout()
 
         first = QPushButton("First")
+        first.clicked.connect(self.jump_first)
         prev = QPushButton("Prev")
         prev.clicked.connect(self.jump_prev)
         _next = QPushButton("Next")
         _next.clicked.connect(self.jump_next)
         last = QPushButton("Last")
+        last.clicked.connect(self.jump_last)
 
         jump = QPushButton("Jump")
         jump.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
