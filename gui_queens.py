@@ -53,18 +53,20 @@ class ChessBoardWidget(QWidget):
 
         self.setLayout(self.layout)
 
-    def _get_size(self):
-        return [self.board_size * self.square_sides] * 2
-
     def init_sol_label(self):
         label = QLabel("Solution 1")
         label.setFont(QFont("Helvetica", 25, QFont.Bold))
         return label
 
-    def set_square_color1(color1):
+    def set_position(self, num):
+        self.position = num
+        self.set_solution_label()
+        self.update()
+
+    def set_square_color1(self, color1):
         self.square_color1 = color1
 
-    def set_square_color2(color2):
+    def set_square_color2(self, color2):
         self.square_color2 = color2
 
     def set_solution_label(self):
@@ -75,6 +77,7 @@ class ChessBoardWidget(QWidget):
 
     def update_size(self, num):
         self.board_size = num
+        self.position = 0
         self.solutions = queens.get_solutions(queens.init_board(num),
                                             queens.possible_moves(num), 0, [])
         self.set_solution_label()
@@ -180,6 +183,24 @@ class QueenDisplay(QMainWindow):
 
         return main_widget
 
+    def jump_first(self):
+        self.board.set_position(0)
+
+    def jump_prev(self):
+        tmp = self.board.position
+        if tmp - 1 >= 0:
+            self.board.set_position(tmp - 1)
+
+    def jump_next(self):
+        tmp = self.board.position
+        if tmp + 1 < len(self.board.solutions):
+            self.board.set_position(tmp + 1)
+
+    def jump_last(self):
+        tmp = self.board.position
+        if tmp != len(self.board.solutions) - 1:
+            self.board.set_position(len(self.board.solutions) - 1)
+
     def browse_frame(self):
         frame = QFrame()
         frame.setFrameShape(QFrame.StyledPanel)
@@ -187,11 +208,10 @@ class QueenDisplay(QMainWindow):
         nav_layout = QHBoxLayout()
 
         first = QPushButton("First")
-
         prev = QPushButton("Prev")
-
+        prev.clicked.connect(self.jump_prev)
         _next = QPushButton("Next")
-
+        _next.clicked.connect(self.jump_next)
         last = QPushButton("Last")
 
         jump = QPushButton("Jump")
