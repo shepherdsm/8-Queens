@@ -183,6 +183,14 @@ class QueenDisplay(QMainWindow):
 
         return main_widget
 
+    def jump(self):
+        dialog = QInputDialog()
+        num, ok = dialog.getInt(self, 'Jump Dialog', 'Jump to: ',
+                                minValue=1, maxValue=len(self.board.solutions))
+
+        if ok:
+            self.board.set_position(num - 1)
+
     def jump_first(self):
         self.board.set_position(0)
 
@@ -218,6 +226,7 @@ class QueenDisplay(QMainWindow):
 
         jump = QPushButton("Jump")
         jump.setSizePolicy(QSizePolicy.Fixed, QSizePolicy.Fixed)
+        jump.clicked.connect(self.jump)
 
         nav_layout.addWidget(first)
         nav_layout.addWidget(prev)
